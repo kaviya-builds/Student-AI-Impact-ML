@@ -44,7 +44,7 @@ if Uploaded_file is not None:
   x=data.copy()
 
   x = x.drop(
-  columns=['StudentID', 'City', 'SatisfactionLevel'],
+  columns=['StudentID', 'SatisfactionLevel'],
   errors='ignore')
  #encode
   if 'Gender' in x.columns:
