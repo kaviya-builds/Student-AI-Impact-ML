@@ -7,6 +7,20 @@ import seaborn as sns
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import (
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score,
+    confusion_matrix,
+    classification_report
+)
 
 st.set_page_config(page_title='AI Impace on Students',page_icon='🤖')
 st.title('AI Impact on Students',icon='🤖')
@@ -84,6 +98,93 @@ if Uploaded_file is not None:
 
   st.subheader("Cluster Feature Comparison")
   st.bar_chart(cluster_summary.drop(columns=['count']))
+  
+  # =====================================
+  # STUDENT SATISFACTION CLASSIFICATION
+  # =====================================
+
+  st.divider()
+  st.header("Student Satisfaction Prediction")
+
+  # Create a separate dataset for classification
+  classification_data = data.drop(
+      columns=['cluster', 'PCA1', 'PCA2'],
+      errors='ignore'
+  ).copy()
+
+  # Separate features and target
+  X_class = classification_data.drop(
+      columns=['StudentID', 'City', 'SatisfactionLevel'],
+      errors='ignore'
+  )
+
+  y_class = classification_data['SatisfactionLevel']
+
+  # Encode categorical input columns
+  X_class = pd.get_dummies(
+      X_class,
+      drop_first=True,
+      dtype=int
+  )
+
+  # Encode target labels
+  target_encoder = LabelEncoder()
+  y_encoded = target_encoder.fit_transform(y_class)
+
+  # Split training and testing data
+  X_train, X_test, y_train, y_test = train_test_split(
+      X_class,
+      y_encoded,
+      test_size=0.2,
+      random_state=42,
+      stratify=y_encoded
+  )
+
+  # Scale features
+  classification_scaler = StandardScaler()
+
+  X_train_scaled = classification_scaler.fit_transform(X_train)
+  X_test_scaled = classification_scaler.transform(X_test)
+
+  st.success("Classification data prepared successfully!")
+
+  st.write("Training records:", len(X_train))
+  st.write("Testing records:", len(X_test))
+  st.write("Number of features:", X_class.shape[1])
+  st.write("Target classes:", list(target_encoder.classes_))
+  
+  # =====================================
+  # TRAIN FOUR CLASSIFICATION MODELS
+  # =====================================
+
+  st.subheader("Training Machine Learning Models")
+
+  models = {
+      "Logistic Regression": LogisticRegression(max_iter=1000),
+      "Decision Tree": DecisionTreeClassifier(random_state=42),
+      "Random Forest": RandomForestClassifier(
+          n_estimators=100,
+          random_state=42
+      ),
+      "KNN": KNeighborsClassifier(n_neighbors=5)
+  }
+
+  # Train each model and store predictions
+  trained_models = {}
+  predictions = {}
+
+  for name, model in models.items():
+
+      model.fit(X_train_scaled, y_train)
+
+      y_pred = model.predict(X_test_scaled)
+
+      trained_models[name] = model
+      predictions[name] = y_pred
+
+  st.success("All four models trained successfully!")
+
+
 else:
   st.info("Upload a csv file to get  stated")
 
