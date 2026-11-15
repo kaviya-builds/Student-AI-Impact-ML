@@ -183,6 +183,51 @@ if Uploaded_file is not None:
       predictions[name] = y_pred
 
   st.success("All four models trained successfully!")
+  
+  # =====================================
+  # MODEL PERFORMANCE COMPARISON
+  # =====================================
+
+  st.divider()
+  st.subheader("Model Performance Comparison")
+
+  results = []
+
+  for name, y_pred in predictions.items():
+
+      results.append({
+          "Model": name,
+          "Accuracy": accuracy_score(y_test, y_pred),
+          "Precision": precision_score(
+              y_test, y_pred, average="macro", zero_division=0
+          ),
+          "Recall": recall_score(
+              y_test, y_pred, average="macro", zero_division=0
+          ),
+          "F1-score": f1_score(
+              y_test, y_pred, average="macro", zero_division=0
+          )
+      })
+
+  results_df = pd.DataFrame(results)
+
+  st.write("Performance of all four Machine Learning models:")
+
+  st.dataframe(
+      results_df.set_index("Model").style.format("{:.2%}"),
+      use_container_width=True
+  )
+
+  # Model comparison graph
+
+  st.subheader("Model Comparison Graph")
+
+  chart_data = results_df.set_index("Model")
+
+  st.bar_chart(
+      chart_data[["Accuracy", "Precision", "Recall", "F1-score"]]
+  )
+
 
 
 else:
