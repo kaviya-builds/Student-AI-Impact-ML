@@ -66,7 +66,7 @@ if Uploaded_file is not None:
   data['PCA2']=x_pca[:,1]
   st.subheader('Customer segments(PCA Projection)')
   plt.figure(figsize=(10,6))
-  palette=sns.color_palette('set2',n_colors=k)
+  palette=sns.color_palette('Set2',n_colors=k)
   sns.scatterplot(x='PCA1',y='PCA2',hue='cluster',data=data,palette=palette,s=120,alpha=0.8)
   plt.title('Customer segments(PCA Projection)')
   plt.xlabel('PCA Component 1')
