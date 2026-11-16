@@ -231,5 +231,3 @@ if Uploaded_file is not None:
 
 else:
   st.info("Upload a csv file to get  stated")
-this is code for app.py 
-now give me full code using above
