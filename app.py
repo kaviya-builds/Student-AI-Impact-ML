@@ -21,8 +21,8 @@ from sklearn.metrics import (
     classification_report
 )
 
-st.set_page_config(page_title='AI Impace on Students',page_icon='🤖')
-st.title('AI Impact on Students',icon='🤖')
+st.set_page_config(page_title='AI Impact on Students',page_icon='🤖')
+st.title('🤖 AI Impact on Students')
 
 #upload csv file
 st.subheader('Upload CSV file')
@@ -43,11 +43,9 @@ if Uploaded_file is not None:
   x=data.copy()
 
   x = x.drop(
-  columns=['StudentID', 'SatisfactionLevel'],
+  columns=['StudentID', 'City', 'SatisfactionLevel'],
   errors='ignore')
  #encode
-  if 'Gender' in x.columns:
-    x['Gender']=x['Gender'].map({'Male':0,'Female':1})
 
   # One-Hot Encode remaining categorical columns
   cat_cols = x.select_dtypes(include=['object', 'category']).columns
@@ -77,11 +75,11 @@ if Uploaded_file is not None:
   st.write("Total variance explained:", pca.explained_variance_ratio_.sum())
   data['PCA1']=x_pca[:,0]
   data['PCA2']=x_pca[:,1]
-  st.subheader('Customer segments(PCA Projection)')
+  st.subheader('Student Segments (PCA Projection)')
   plt.figure(figsize=(10,6))
   palette=sns.color_palette('Set2',n_colors=k)
   sns.scatterplot(x='PCA1',y='PCA2',hue='cluster',data=data,palette=palette,s=120,alpha=0.8)
-  plt.title('Customer segments(PCA Projection)')
+  plt.title('Student Segments (PCA Projection)')
   plt.xlabel('PCA Component 1')
   plt.ylabel('PCA Component 2')
   plt.legend(title='cluster')
@@ -230,4 +228,4 @@ if Uploaded_file is not None:
 
 
 else:
-  st.info("Upload a csv file to get  stated")
+  st.info("Upload a CSV file to get started")
